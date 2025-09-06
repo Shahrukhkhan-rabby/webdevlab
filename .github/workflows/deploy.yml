@@ -1,0 +1,44 @@
+name: Django CI/CD
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  # build:
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #   - uses: actions/checkout@v2
+  #   - name: Set up Python
+  #     uses: actions/setup-python@v2
+  #     with:
+  #       python-version: '3.8'
+  #   - name: Install dependencies
+  #     run: |
+  #       pip install -r requirements.txt
+  #   - name: Run Tests
+  #     run: |
+  #       # Add commands to run your tests
+  deploy_backend:
+    # needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
+    steps:
+    - uses: actions/checkout@v3
+    - name: SSH and Deploy
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.KEY }}
+        script: |
+          cd /home/shayon/webdevlab
+          git pull origin master
+          cd /home/shayon/webdevlab/server
+          source .venv/bin/activate
+          pip install -r requirements.txt
+          ./manage.py migrate
+          sudo systemctl restart your_project_service
