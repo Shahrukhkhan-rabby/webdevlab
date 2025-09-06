@@ -1,0 +1,10 @@
+/server/.venv
+/server/test.env
+/server/development.env
+/server/.env
+/server/google-drive-credentials.json
+/**/**/__pycache__
+/client/node_modules
+/client/.cache
+/client/.env
+.idea
